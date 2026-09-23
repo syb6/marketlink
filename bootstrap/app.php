@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Trust Railway's load balancer so HTTPS is recognized
+        $middleware->trustProxies(at: '*');
+
+        // Custom middleware aliases
         $middleware->alias([
             'role' => CheckRole::class,
         ]);
