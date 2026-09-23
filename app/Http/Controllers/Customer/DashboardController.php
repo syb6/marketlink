@@ -42,4 +42,18 @@ class DashboardController extends Controller
             'announcements'
         ));
     }
+
+    public function destroyProfile(\Illuminate\Http\Request $request)
+    {
+        $user = Auth::user();
+
+        Auth::logout();
+        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        $user->delete();
+
+        return redirect('/')->with('success', 'Your account has been deleted successfully.');
+    }
 }

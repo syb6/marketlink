@@ -4,110 +4,90 @@
 @section('content')
 
 @if(empty($cart) || $products->isEmpty())
-    <div class="empty-state">
-        <i class="bi bi-cart-x empty-state-icon"></i>
-        <h3 class="fw-bold">Your cart is empty</h3>
-        <p class="text-muted fs-5 mb-4">Looks like you haven't added any fresh produce yet.</p>
-        <a href="{{ route('customer.products.index') }}" class="btn btn-primary-ml btn-lg rounded-pill px-5">Start Shopping</a>
+    <div style="text-align: center; padding: 60px 20px; background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; margin-top: 20px;">
+        <i class="bi bi-cart-x text-muted" style="font-size: 32px; margin-bottom: 15px; display: block;"></i>
+        <h3 style="font-size: 20px; margin-bottom: 10px;">Your cart is empty</h3>
+        <p style="color: var(--ink-soft); font-size: 11px; margin-bottom: 20px;">Looks like you haven't added any fresh produce yet.</p>
+        <a href="{{ route('customer.products.index') }}" class="primary-button text-decoration-none">Start Shopping</a>
     </div>
 @else
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="card-ml border-0 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-                    <h5 class="fw-bold mb-0">Cart Items ({{ array_sum($cart) }})</h5>
-                    <form action="{{ route('customer.cart.clear') }}" method="POST" onsubmit="return confirm('Are you sure you want to clear your cart?');">
+    <div class="checkout-layout">
+        <div class="checkout-main">
+            <div class="checkout-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--soft-line);">
+                    <h2 style="font-size: 18px; margin: 0;">Cart Items ({{ array_sum($cart) }})</h2>
+                    <form action="{{ route('customer.cart.clear') }}" method="POST" onsubmit="return confirm('Are you sure you want to clear your cart?');" style="margin: 0;">
                         @csrf
-                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
-                            <i class="bi bi-trash3"></i> Clear Cart
+                        <button type="submit" style="background: none; border: none; color: var(--clay); font-size: 10px; font-weight: 800; cursor: pointer; padding: 0;">
+                            <i class="bi bi-trash3"></i> CLEAR CART
                         </button>
                     </form>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-borderless align-middle mb-0">
-                        <thead class="text-muted small text-uppercase fw-bold border-bottom">
-                            <tr>
-                                <th class="ps-0" style="width: 50%;">Product</th>
-                                <th>Price</th>
-                                <th style="width: 140px;">Quantity</th>
-                                <th class="text-end">Subtotal</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($cart as $productId => $qty)
-                                @php $product = $products->get($productId); @endphp
-                                @if($product)
-                                    <tr class="border-bottom" data-cart-row="{{ $product->id }}">
-                                        <td class="ps-0 py-4">
-                                            <div class="d-flex align-items-center gap-3">
-                                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="rounded shadow-sm" width="70" height="70" style="object-fit: cover;">
-                                                <div>
-                                                    <h6 class="fw-bold mb-1"><a href="{{ route('customer.products.show', $product) }}" class="text-dark text-decoration-none hover-primary">{{ $product->name }}</a></h6>
-                                                    <div class="small text-muted mb-1"><i class="bi bi-shop"></i> {{ $product->farmer->farmerProfile->stall_name ?? $product->farmer->name }}</div>
-                                                    @if($qty > $product->stock_quantity)
-                                                        <div class="small text-danger"><i class="bi bi-exclamation-triangle"></i> Only {{ $product->stock_quantity }} available</div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="fw-medium">${{ number_format($product->price, 2) }}</td>
-                                        <td>
-                                            <div class="input-group input-group-sm qty-stepper" style="width: 110px;">
-                                                <button class="btn btn-outline-secondary qty-minus" type="button"><i class="bi bi-dash"></i></button>
-                                                <input type="number" class="form-control text-center bg-white qty-input" value="{{ $qty }}" min="1" max="{{ $product->stock_quantity }}" data-cart-qty-input="{{ $product->id }}">
-                                                <button class="btn btn-outline-secondary qty-plus" type="button"><i class="bi bi-plus"></i></button>
-                                            </div>
-                                        </td>
-                                        <td class="text-end fw-bold" data-cart-subtotal="{{ $product->price * $qty }}">
-                                            ${{ number_format($product->price * $qty, 2) }}
-                                        </td>
-                                        <td class="text-end pe-0">
-                                            <button class="btn btn-link text-danger p-0" data-cart-remove="{{ $product->id }}" title="Remove item">
-                                                <i class="bi bi-x-circle fs-5"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    @foreach($cart as $productId => $qty)
+                        @php $product = $products->get($productId); @endphp
+                        @if($product)
+                            <div class="checkout-item" data-cart-row="{{ $product->id }}">
+                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                                <div>
+                                    <h3 style="font-size: 13px; margin: 0 0 4px;"><a href="{{ route('customer.products.show', $product) }}" style="color: var(--ink); text-decoration: none;">{{ $product->name }}</a></h3>
+                                    <span style="font-size: 10px; color: var(--muted);"><i class="bi bi-shop"></i> {{ $product->farmer->farmerProfile->stall_name ?? $product->farmer->name }}</span>
+                                    @if($qty > $product->stock_quantity)
+                                        <div style="font-size: 9px; color: var(--clay); margin-top: 4px;"><i class="bi bi-exclamation-triangle"></i> Only {{ $product->stock_quantity }} available</div>
+                                    @endif
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+                                    <strong style="font-size: 13px;" data-cart-subtotal="{{ $product->price * $qty }}">${{ number_format($product->price * $qty, 2) }}</strong>
+                                    
+                                    <div class="quantity-control" style="display: flex; align-items: center; border: 1px solid var(--line); border-radius: 6px; overflow: hidden;">
+                                        <button type="button" class="qty-minus" style="padding: 4px 8px; border: none; background: #fff; cursor: pointer; font-size: 14px; color: var(--muted);"><i class="bi bi-dash"></i></button>
+                                        <input type="number" class="qty-input" value="{{ $qty }}" min="1" max="{{ $product->stock_quantity }}" data-cart-qty-input="{{ $product->id }}" style="width: 30px; text-align: center; border: none; font-size: 11px; font-weight: 700; outline: none;">
+                                        <button type="button" class="qty-plus" style="padding: 4px 8px; border: none; background: #fff; cursor: pointer; font-size: 14px; color: var(--muted);"><i class="bi bi-plus"></i></button>
+                                    </div>
+
+                                    <button type="button" class="remove-btn" data-cart-remove="{{ $product->id }}" style="background: none; border: none; color: var(--clay); font-size: 16px; cursor: pointer; margin-top: 5px;">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card-ml border-0 p-4 sticky-top" style="top: 100px;">
-                <h5 class="fw-bold mb-4">Order Summary</h5>
+        <aside>
+            <div class="checkout-summary" style="position: sticky; top: 100px;">
+                <h3 style="font-size: 16px; margin-bottom: 20px;">Order Summary</h3>
                 
-                <div class="d-flex justify-content-between mb-3 text-muted">
+                <div class="checkout-summary-row">
                     <span>Subtotal</span>
-                    <span id="cart-total" class="text-dark fw-medium">${{ number_format($total, 2) }}</span>
+                    <strong id="cart-total">${{ number_format($total, 2) }}</strong>
                 </div>
-                <div class="d-flex justify-content-between mb-3 text-muted pb-3 border-bottom">
+                <div class="checkout-summary-row">
                     <span>Tax & Fees</span>
-                    <span>Calculated at checkout</span>
+                    <strong>Calculated at checkout</strong>
                 </div>
                 
-                <div class="d-flex justify-content-between mb-4 fs-5">
-                    <span class="fw-bold text-dark">Estimated Total</span>
-                    <span class="fw-bold text-primary" id="cart-grand-total">${{ number_format($total, 2) }}</span>
+                <div class="checkout-summary-row" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--soft-line); font-size: 14px;">
+                    <span style="font-weight: 800; color: var(--ink);">Estimated Total</span>
+                    <strong id="cart-grand-total" style="color: var(--forest); font-size: 18px;">${{ number_format($total, 2) }}</strong>
                 </div>
                 
-                <div class="alert alert-info border-0 bg-info-subtle small mb-4">
+                <div style="background: var(--sage); border-radius: 8px; padding: 12px; font-size: 9px; color: var(--forest-dark); margin: 20px 0;">
                     <i class="bi bi-info-circle-fill me-1"></i> Orders are processed per farmer. You will pick up directly from them at the market.
                 </div>
 
-                <a href="{{ route('customer.orders.checkout') }}" class="btn btn-primary-ml w-100 justify-content-center py-3 fs-6">
+                <a href="{{ route('customer.orders.checkout') }}" class="primary-button wide" style="text-decoration:none;">
                     Proceed to Checkout <i class="bi bi-arrow-right"></i>
                 </a>
                 
-                <div class="text-center mt-3">
-                    <a href="{{ route('customer.products.index') }}" class="text-muted small text-decoration-none"><i class="bi bi-arrow-left"></i> Continue Shopping</a>
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="{{ route('customer.products.index') }}" style="font-size: 10px; font-weight: 700; color: var(--muted); text-decoration: none;"><i class="bi bi-arrow-left"></i> Continue Shopping</a>
                 </div>
             </div>
-        </div>
+        </aside>
     </div>
 @endif
 

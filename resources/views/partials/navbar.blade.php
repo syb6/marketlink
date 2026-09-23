@@ -1,66 +1,89 @@
-<nav class="navbar navbar-expand-lg navbar-main">
-    <div class="container">
-        <a class="navbar-brand navbar-brand-logo" href="{{ route('home') }}">
-            <div class="brand-icon">
-                <i class="bi bi-basket-fill"></i>
-            </div>
-            MarketLink
+<header class="site-header">
+    <div class="app-container header-inner">
+        <a class="brand" href="{{ route('home') }}" style="text-decoration: none;">
+            <span class="brand-mark"><i class="bi bi-basket-fill"></i></span>
+            <span>Market<span>Link</span></span>
         </a>
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarMain">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link nav-link-custom {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-link-custom {{ request()->routeIs('products.*') || request()->routeIs('customer.products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">Products</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-link-custom {{ request()->routeIs('markets.*') || request()->routeIs('customer.markets.*') ? 'active' : '' }}" href="{{ route('markets.index') }}">Markets</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-link-custom {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-link-custom {{ request()->routeIs('contact') ? 'active' : '' }}" href="{{ route('contact') }}">Contact</a>
-                </li>
-            </ul>
-            <div class="d-flex align-items-center gap-3">
-                @auth
-                    @if(auth()->user()->isCustomer())
-                        <a href="{{ route('customer.cart') }}" class="text-primary-ml position-relative text-decoration-none fs-5 me-3">
-                            <i class="bi bi-cart3"></i>
-                            @php
-                                $cartCount = is_array(session('cart')) ? array_sum(session('cart')) : 0;
-                            @endphp
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-count" style="display: {{ $cartCount > 0 ? 'inline-block' : 'none' }}; font-size: 0.6rem;">
-                                {{ $cartCount }}
-                            </span>
+
+        <div class="header-search">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search for fresh produce...">
+        </div>
+
+        <nav class="main-nav">
+            <a href="{{ route('home') }}" class="nav-link">Home</a>
+            <a href="{{ route('products.index') }}" class="nav-link">Products</a>
+            <a href="{{ route('markets.index') }}" class="nav-link">Markets</a>
+            <a href="{{ route('about') }}" class="nav-link">About</a>
+            <a href="{{ route('contact') }}" class="nav-link">Contact</a>
+        </nav>
+
+        <div class="header-actions">
+            @auth
+                @if(auth()->user()->isCustomer())
+                    <a href="{{ route('customer.cart') }}" class="header-icon text-decoration-none" title="View Cart">
+                        <i class="bi bi-cart3"></i>
+                        @php
+                            $cartCount = is_array(session('cart')) ? array_sum(session('cart')) : 0;
+                        @endphp
+                        @if($cartCount > 0)
+                            <b id="cart-count">{{ $cartCount }}</b>
+                        @endif
+                    </a>
+                @endif
+                
+                <div class="nav-dropdown-wrapper" style="position: relative;">
+                    <button type="button" class="outline-button nav-dropdown-trigger" onclick="this.nextElementSibling.classList.toggle('d-none')" style="gap: 8px;">
+                        <img src="{{ auth()->user()->profile_photo_url }}" alt="Profile" style="width:18px;height:18px;border-radius:50%;object-fit:cover;">
+                        {{ auth()->user()->name }}
+                        <i class="bi bi-chevron-down" style="font-size: 10px;"></i>
+                    </button>
+                    
+                    <div class="nav-dropdown-menu d-none" style="position: absolute; top: calc(100% + 8px); right: 0; width: 180px; background: var(--surface-glass); backdrop-filter: blur(12px); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); display: flex; flex-direction: column; padding: 6px; z-index: 100;">
+                        <a href="{{ route(auth()->user()->dashboard_route) }}" class="dropdown-item" style="padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--stone-700); text-decoration: none; border-radius: 6px; display: flex; align-items: center; gap: 8px; transition: all 0.2s;">
+                            <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
-                    @endif
-                    <div class="dropdown">
-                        <a class="text-decoration-none dropdown-toggle d-flex align-items-center gap-2 text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ auth()->user()->profile_photo_url }}" alt="Profile" class="rounded-circle" width="32" height="32" style="object-fit: cover;">
-                            <span class="fw-semibold">{{ auth()->user()->name }}</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                            <li><a class="dropdown-item" href="{{ route(auth()->user()->dashboard_route) }}"><i class="bi bi-speedometer2 me-2 text-muted"></i>Dashboard</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
-                                </form>
-                            </li>
-                        </ul>
+                        <hr style="margin: 4px 0; border: none; border-top: 1px solid var(--border-glass);">
+                        <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                            @csrf
+                            <button type="submit" class="dropdown-item" style="width: 100%; padding: 8px 12px; font-size: 11px; font-weight: 600; color: #dc2626; background: none; border: none; text-align: left; border-radius: 6px; display: flex; align-items: center; gap: 8px; transition: all 0.2s;">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </button>
+                        </form>
                     </div>
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-nav-login">Login</a>
-                    <a href="{{ route('register') }}" class="btn btn-nav-register">Sign Up</a>
-                @endauth
-            </div>
+                </div>
+                
+                <!-- Close dropdown when clicking outside -->
+                <script>
+                    document.addEventListener('click', function(e) {
+                        if(!e.target.closest('.nav-dropdown-wrapper')) {
+                            document.querySelectorAll('.nav-dropdown-menu').forEach(menu => menu.classList.add('d-none'));
+                        }
+                    });
+                </script>
+            @else
+                <a href="{{ route('login') }}" class="login-button text-decoration-none">Login</a>
+                <a href="{{ route('register') }}" class="primary-button text-decoration-none">Sign Up</a>
+            @endauth
         </div>
     </div>
-</nav>
+</header>
+
+<style>
+    .nav-link {
+        padding: 5px 0;
+        color: var(--stone-700);
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s var(--ease);
+    }
+    .nav-link:hover {
+        color: var(--emerald-600);
+    }
+    .dropdown-item:hover {
+        background: var(--emerald-50);
+        color: var(--emerald-700) !important;
+    }
+</style>
+

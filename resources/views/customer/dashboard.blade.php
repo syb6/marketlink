@@ -3,135 +3,133 @@
 
 @section('content')
 
-<!-- Announcements -->
 @if($announcements->count() > 0)
     @foreach($announcements as $announcement)
-        <div class="announcement-bar animate-up text-{{ $announcement->type == 'info' ? 'primary' : ($announcement->type == 'success' ? 'success' : 'warning') }}">
-            <i class="bi bi-megaphone-fill me-2"></i>
-            <strong>{{ $announcement->title }}:</strong> {{ $announcement->body }}
+        <div class="admin-alert" style="border-color: {{ $announcement->type == 'info' ? 'var(--forest)' : ($announcement->type == 'success' ? 'var(--leaf)' : 'var(--clay)') }}; background: {{ $announcement->type == 'info' ? 'var(--sage)' : ($announcement->type == 'success' ? '#e9f4e5' : '#fff2ea') }}; color: var(--ink);">
+            <i class="bi bi-megaphone-fill text-{{ $announcement->type == 'info' ? 'primary' : ($announcement->type == 'success' ? 'success' : 'warning') }}"></i>
+            <div>
+                <strong>{{ $announcement->title }}:</strong> {{ $announcement->body }}
+            </div>
         </div>
     @endforeach
 @endif
 
-<!-- Stats Overview -->
-<div class="row g-4 mb-4">
-    <div class="col-md-3 col-sm-6">
-        <div class="stat-card animate-up-delay-1">
-            <div class="stat-icon stat-icon-blue"><i class="bi bi-bag"></i></div>
-            <div>
-                <div class="stat-number">{{ $totalOrders }}</div>
-                <div class="stat-label">Total Orders</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stat-card animate-up-delay-2">
-            <div class="stat-icon stat-icon-gold"><i class="bi bi-clock"></i></div>
-            <div>
-                <div class="stat-number">{{ $pendingOrders }}</div>
-                <div class="stat-label">Pending / Ready</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stat-card animate-up-delay-3">
-            <div class="stat-icon stat-icon-green"><i class="bi bi-check2-circle"></i></div>
-            <div>
-                <div class="stat-number">{{ $completedOrders }}</div>
-                <div class="stat-label">Completed</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stat-card animate-up-delay-4">
-            <div class="stat-icon stat-icon-red"><i class="bi bi-heart"></i></div>
-            <div>
-                <div class="stat-number">{{ $favoriteCount }}</div>
-                <div class="stat-label">Saved Favorites</div>
-            </div>
-        </div>
+<div class="dashboard-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p>Welcome back, {{ auth()->user()->name }}! Here's what's happening with your pre-orders.</p>
     </div>
 </div>
 
-<div class="row g-4">
+<div class="metrics-grid mb-4">
+    <div class="metric-card sage">
+        <div class="metric-top">
+            <span><i class="bi bi-bag"></i></span>
+        </div>
+        <small>Total Orders</small>
+        <strong>{{ $totalOrders }}</strong>
+    </div>
+    <div class="metric-card gold">
+        <div class="metric-top">
+            <span style="color:#97741f; background:rgba(255,255,255,0.65)"><i class="bi bi-clock"></i></span>
+        </div>
+        <small>Pending / Ready</small>
+        <strong style="color:#97741f;">{{ $pendingOrders }}</strong>
+    </div>
+    <div class="metric-card green">
+        <div class="metric-top">
+            <span style="color:var(--leaf); background:rgba(255,255,255,0.65)"><i class="bi bi-check2-circle"></i></span>
+        </div>
+        <small>Completed</small>
+        <strong style="color:var(--leaf);">{{ $completedOrders }}</strong>
+    </div>
+    <div class="metric-card clay">
+        <div class="metric-top">
+            <span style="color:var(--clay); background:rgba(255,255,255,0.65)"><i class="bi bi-heart"></i></span>
+        </div>
+        <small>Saved Favorites</small>
+        <strong style="color:var(--clay);">{{ $favoriteCount }}</strong>
+    </div>
+</div>
+
+<div class="admin-two-col">
     <!-- Recent Orders -->
-    <div class="col-lg-8">
-        <div class="card-ml border-0 h-100">
-            <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
-                <h6 class="fw-bold mb-0">Recent Orders</h6>
-                <a href="{{ route('customer.orders.index') }}" class="btn btn-sm btn-outline-ml">View All</a>
+    <div>
+        <div class="data-card h-100">
+            <div class="data-card-toolbar">
+                <div class="data-card-header mb-0">
+                    <h2 style="font-size: 20px; line-height: 1; margin: 0;">Recent Orders</h2>
+                </div>
+                <a href="{{ route('customer.orders.index') }}" class="light-button text-decoration-none">View All</a>
             </div>
-            
+
             @if($recentOrders->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-ml mb-0 border-0 shadow-none">
-                        <thead>
-                            <tr>
-                                <th>Order #</th>
-                                <th>Farmer</th>
-                                <th>Pickup Date</th>
-                                <th>Status</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($recentOrders as $order)
-                                <tr>
-                                    <td><a href="{{ route('customer.orders.show', $order) }}" class="fw-bold text-decoration-none">#ORD-{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</a></td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <img src="{{ $order->farmer->profile_photo_url }}" class="rounded-circle" width="24" height="24">
-                                            {{ $order->farmer->farmerProfile->stall_name ?? $order->farmer->name }}
-                                        </div>
-                                    </td>
-                                    <td>{{ $order->pickup_date->format('M d, Y') }} <br> <small class="text-muted">{{ $order->pickup_slot }}</small></td>
-                                    <td><span class="status-badge status-{{ $order->status }}">{{ $order->status }}</span></td>
-                                    <td class="fw-bold">${{ number_format($order->total_amount, 2) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="orders-grid" style="grid-template-columns: 1fr; gap: 14px;">
+                    @foreach($recentOrders as $order)
+                        <div class="order-card">
+                            <div class="order-card-top">
+                                <a href="{{ route('customer.orders.show', $order) }}" class="order-number text-decoration-none">#ORD-{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</a>
+                                <span class="status-pill {{ $order->status == 'completed' ? 'green' : ($order->status == 'pending' ? 'neutral' : 'gold') }}">{{ ucfirst($order->status) }}</span>
+                            </div>
+                            <div class="order-market">
+                                <span>
+                                    <img src="{{ $order->farmer->profile_photo_url }}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;">
+                                    <div>
+                                        <strong>{{ $order->farmer->farmerProfile->stall_name ?? $order->farmer->name }}</strong>
+                                        <small>Pickup: {{ $order->pickup_date->format('M d, Y') }} at {{ $order->pickup_slot }}</small>
+                                    </div>
+                                </span>
+                                <strong>${{ number_format($order->total_amount, 2) }}</strong>
+                            </div>
+                            <div class="order-card-bottom">
+                                <span style="font-size:10px; color:var(--muted);">{{ $order->items->count() }} items</span>
+                                <a href="{{ route('customer.orders.show', $order) }}" class="card-link text-decoration-none">Details <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             @else
-                <div class="empty-state">
-                    <i class="bi bi-receipt empty-state-icon"></i>
-                    <h5 class="fw-bold">No orders yet</h5>
-                    <p>Start browsing markets and local products to place your first order.</p>
-                    <a href="{{ route('customer.products.index') }}" class="btn btn-primary-ml mt-2">Browse Products</a>
+                <div style="text-align: center; padding: 40px; border: 1px dashed var(--line); border-radius: 12px; margin-top: 15px;">
+                    <i class="bi bi-receipt text-muted mb-2 d-block" style="font-size: 24px;"></i>
+                    <strong>No orders yet</strong>
+                    <p class="text-muted" style="font-size: 11px;">Start browsing markets and local products to place your first order.</p>
+                    <a href="{{ route('customer.products.index') }}" class="primary-button text-decoration-none mt-2">Browse Products</a>
                 </div>
             @endif
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="col-lg-4">
-        <div class="card-ml border-0 p-4 h-100">
-            <h6 class="fw-bold mb-4">Quick Actions</h6>
-            
-            <a href="{{ route('customer.markets.index') }}" class="btn btn-outline-ml w-100 mb-3 justify-content-start py-3">
-                <i class="bi bi-shop fs-5 me-2"></i> 
-                <div class="text-start">
-                    <div class="fw-bold text-dark">Find a Market</div>
-                    <small class="text-muted">Discover nearby locations</small>
-                </div>
-            </a>
-            
-            <a href="{{ route('customer.products.index') }}" class="btn btn-outline-ml w-100 mb-3 justify-content-start py-3">
-                <i class="bi bi-bag fs-5 me-2"></i> 
-                <div class="text-start">
-                    <div class="fw-bold text-dark">Shop Produce</div>
-                    <small class="text-muted">Search fresh inventory</small>
-                </div>
-            </a>
+    <!-- Quick Actions & Danger Zone -->
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="data-card">
+            <h6 class="fw-bold mb-3" style="font-size: 14px;">Quick Actions</h6>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="{{ route('customer.markets.index') }}" class="alternate-button text-decoration-none" style="justify-content: flex-start; padding: 0 15px;">
+                    <i class="bi bi-shop text-primary me-2"></i> Find a Market
+                </a>
+                <a href="{{ route('customer.products.index') }}" class="alternate-button text-decoration-none" style="justify-content: flex-start; padding: 0 15px;">
+                    <i class="bi bi-bag text-success me-2"></i> Shop Produce
+                </a>
+                <a href="{{ route('customer.favorites.index') }}" class="alternate-button text-decoration-none" style="justify-content: flex-start; padding: 0 15px;">
+                    <i class="bi bi-heart text-danger me-2"></i> My Favorites
+                </a>
+            </div>
+        </div>
 
-            <a href="{{ route('customer.favorites.index') }}" class="btn btn-outline-ml w-100 justify-content-start py-3">
-                <i class="bi bi-heart fs-5 me-2"></i> 
-                <div class="text-start">
-                    <div class="fw-bold text-dark">My Favorites</div>
-                    <small class="text-muted">View saved items</small>
-                </div>
-            </a>
+        <div class="data-card" style="border-color: rgba(201, 107, 77, 0.3); background: #fffdfc;">
+            <h6 class="fw-bold mb-3" style="font-size: 14px; color: var(--clay);">Danger Zone</h6>
+            <p style="font-size: 10px; color: var(--ink-soft); margin-bottom: 15px;">
+                Once you delete your account, there is no going back. Please be certain.
+            </p>
+            <form action="{{ route('customer.profile.destroy') }}" method="POST" onsubmit="return confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="primary-button" style="background: var(--clay); width: 100%;">
+                    <i class="bi bi-trash"></i> Delete Account
+                </button>
+            </form>
         </div>
     </div>
 </div>
+
 @endsection

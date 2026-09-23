@@ -2,199 +2,247 @@
 
 @section('content')
 
-<!-- Hero Section -->
-<section class="hero-section text-center">
-    <div class="container position-relative z-1">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 animate-up">
-                <span class="hero-badge"><i class="bi bi-stars text-warning"></i> Fresh from the farm to your table</span>
-                <h1 class="hero-title">Connect with your local <span class="hero-highlight">Farmers Market</span></h1>
-                <p class="hero-subtitle mx-auto">Discover fresh, seasonal, and locally grown produce. Pre-order your favorites online and pick them up at the market. Never miss out on fresh goods again.</p>
-                <div class="d-flex gap-3 justify-content-center mt-4">
-                    <a href="{{ route('register') }}" class="btn btn-accent-ml btn-lg px-4 rounded-pill">Get Started</a>
-                    <a href="{{ route('about') }}" class="btn btn-outline-light btn-lg px-4 rounded-pill fw-semibold">Learn More</a>
+<div class="home-hero">
+    <div class="app-container">
+        <div class="home-hero-grid">
+            <div class="home-hero-copy">
+                <div class="eyebrow"><span class="eyebrow-dot"></span> Fresh & Local</div>
+                <h1>Discover the <em>best</em> local harvest</h1>
+                <p>Connect with farmers, pre-order seasonal produce, and pick up fresh goods at a market near you.</p>
+
+                <div class="hero-search-card">
+                    <div class="day-toggle">
+                        <button type="button" class="active">Today</button>
+                        <button type="button">Tomorrow</button>
+                        <button type="button">This Weekend</button>
+                    </div>
+                    <form action="{{ route('products.index') }}" method="GET" class="hero-search-input">
+                        <i class="bi bi-search"></i>
+                        <input type="text" name="q" placeholder="What are you looking for? (e.g., Organic Tomatoes)">
+                        <button type="submit"><i class="bi bi-arrow-right"></i></button>
+                    </form>
+                    <div class="hero-search-meta">
+                        <span><i class="bi bi-geo-alt"></i> Auto-detect location</span>
+                        <span><i class="bi bi-clock"></i> Pickup available today</span>
+                    </div>
                 </div>
 
-                <div class="hero-stats justify-content-center animate-up-delay-2 mt-5">
-                    <div class="hero-stat">
-                        <span class="hero-stat-number">{{ $farmerCount }}+</span>
-                        <span class="hero-stat-label">Local Farmers</span>
+                <div class="hero-proof-row">
+                    <div class="avatar-stack">
+                        <i>A</i>
+                        <i>J</i>
+                        <i>S</i>
+                        <i>M</i>
                     </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-number">{{ $marketCount }}</span>
-                        <span class="hero-stat-label">Active Markets</span>
+                    Join {{ number_format($customerCount) }}+ happy customers 
+                    <span class="verified-inline"><i class="bi bi-patch-check-fill"></i> Verified Local</span>
+                </div>
+            </div>
+            <div class="home-hero-image" style="background-image: url('{{ asset('storage/default-hero.jpg') }}'); background-color: #dcebd8;">
+                <div class="hero-image-overlay"></div>
+                
+                <div class="floating-note note-one">
+                    <div class="note-icon"><i class="bi bi-check2"></i></div>
+                    <div>
+                        <b>Fresh Basil</b><br>
+                        Added to bag
                     </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-number">{{ $customerCount }}+</span>
-                        <span class="hero-stat-label">Happy Customers</span>
+                </div>
+
+                <div class="floating-note note-two">
+                    <div class="note-icon clay"><i class="bi bi-star-fill"></i></div>
+                    <div>
+                        <b>Top Rated</b><br>
+                        Local Farm
                     </div>
+                </div>
+
+                <div class="harvest-stamp">
+                    <span>Fresh</span>
+                    <b>2024</b>
+                    <span>Harvest</span>
                 </div>
             </div>
         </div>
     </div>
-</section>
+    
+    <div class="hero-rail">
+        <div class="app-container">
+            <span><b>*</b> ORGANIC</span>
+            <span><b>*</b> SEASONAL</span>
+            <span><b>*</b> LOCALLY Sourced</span>
+            <span><b>*</b> SUSTAINABLE</span>
+            <span><b>*</b> FARM FRESH</span>
+            <span><b>*</b> NO PRESERVATIVES</span>
+            <span><b>*</b> HAND PICKED</span>
+        </div>
+    </div>
+</div>
 
-<!-- Announcements -->
-@if($announcements->count() > 0)
-<div class="container mt-n4 position-relative z-2">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card-glass p-3 shadow-lg">
-                <div id="announcementCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        @foreach($announcements as $index => $announcement)
-                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                <div class="d-flex align-items-center gap-3 px-3">
-                                    <div class="fs-4 text-{{ $announcement->type == 'info' ? 'primary' : ($announcement->type == 'success' ? 'success' : 'warning') }}">
-                                        <i class="bi bi-megaphone-fill"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-0 fw-bold">{{ $announcement->title }}</h6>
-                                        <p class="mb-0 small text-muted">{{ Str::limit($announcement->body, 100) }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+<div class="trust-strip">
+    <div class="app-container">
+        <div class="trust-grid">
+            <div class="trust-item">
+                <span><i class="bi bi-shield-check"></i></span>
+                <div>
+                    <strong>Verified Farmers</strong>
+                    <small>100% local producers</small>
+                </div>
+            </div>
+            <div class="trust-item">
+                <span><i class="bi bi-basket"></i></span>
+                <div>
+                    <strong>Secure Pre-order</strong>
+                    <small>Reserve before they sell out</small>
+                </div>
+            </div>
+            <div class="trust-item">
+                <span><i class="bi bi-geo-alt"></i></span>
+                <div>
+                    <strong>Local Pickup</strong>
+                    <small>Convenient market locations</small>
+                </div>
+            </div>
+            <div class="trust-item">
+                <span><i class="bi bi-arrow-repeat"></i></span>
+                <div>
+                    <strong>Zero Waste</strong>
+                    <small>Direct farm-to-table system</small>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endif
 
-<!-- How It Works -->
-<section class="py-5 my-4">
-    <div class="container text-center">
-        <span class="section-pill">Simple Process</span>
-        <h2 class="section-title mb-5">How MarketLink Works</h2>
-        
-        <div class="row g-4 justify-content-center">
-            <div class="col-md-4">
-                <div class="card-ml p-4 h-100 border-0 text-center animate-up-delay-1">
-                    <div class="stat-icon stat-icon-green mx-auto mb-4" style="width:80px;height:80px;font-size:2rem;">
-                        <i class="bi bi-search"></i>
-                    </div>
-                    <h4>1. Discover</h4>
-                    <p class="text-muted mb-0">Find local farmers and markets near you. Browse fresh, seasonal produce online.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-ml p-4 h-100 border-0 text-center animate-up-delay-2">
-                    <div class="stat-icon stat-icon-gold mx-auto mb-4" style="width:80px;height:80px;font-size:2rem;">
-                        <i class="bi bi-bag-plus"></i>
-                    </div>
-                    <h4>2. Pre-Order</h4>
-                    <p class="text-muted mb-0">Secure your favorites before they sell out. Select a pickup date and time.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-ml p-4 h-100 border-0 text-center animate-up-delay-3">
-                    <div class="stat-icon stat-icon-teal mx-auto mb-4" style="width:80px;height:80px;font-size:2rem;">
-                        <i class="bi bi-geo-alt"></i>
-                    </div>
-                    <h4>3. Pick Up</h4>
-                    <p class="text-muted mb-0">Head to the market, pay the farmer directly, and enjoy your fresh goods.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Featured Markets -->
 @if($markets->count() > 0)
-<section class="py-5 bg-white">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-end mb-4">
+<div class="section-space soft-section">
+    <div class="app-container">
+        <div class="section-header">
             <div>
-                <span class="section-pill">Locations</span>
-                <h2 class="section-title">Nearby Markets</h2>
+                <div class="eyebrow"><span class="eyebrow-dot"></span> Locations</div>
+                <h2>Explore <em>nearby</em> markets</h2>
             </div>
-            <a href="{{ route('markets.index') }}" class="btn btn-outline-ml">View All</a>
+            <a href="{{ route('markets.index') }}" class="outline-button text-decoration-none">View All Markets</a>
         </div>
 
-        <div class="row g-4">
+        <div class="market-card-grid">
             @foreach($markets as $market)
-                <div class="col-md-4">
-                    <div class="card-ml h-100 border-0">
-                        @if($market->image)
-                            <img src="{{ asset('storage/'.$market->image) }}" class="card-img-top img-cover" style="height: 200px;" alt="{{ $market->name }}">
-                        @else
-                            <div class="bg-light d-flex align-items-center justify-content-center" style="height:200px;">
-                                <i class="bi bi-shop fs-1 text-muted opacity-50"></i>
-                            </div>
+            <div class="market-card">
+                <div class="market-card-top green">
+                    <div class="market-live">
+                        <span class="live-dot"></span> Active Now
+                    </div>
+                    <button type="button" class="market-select"><i class="bi bi-heart"></i></button>
+                    <div class="market-map-lines"></div>
+                    <div class="market-card-icon"><i class="bi bi-shop fs-1"></i></div>
+                </div>
+                <div class="market-card-body">
+                    <div class="market-day">
+                        <span><i class="bi bi-geo-alt-fill text-primary"></i> {{ $market->city }}</span>
+                        @if(!empty($market->operating_days))
+                            <b>{{ $market->operating_days[0] }}s</b>
                         @endif
-                        <div class="card-body p-4">
-                            <h5 class="fw-bold mb-1">{{ $market->name }}</h5>
-                            <p class="small text-muted mb-3"><i class="bi bi-geo-alt-fill text-primary"></i> {{ $market->city }}</p>
-                            <p class="mb-3 small">{{ Str::limit($market->description, 100) }}</p>
-                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                @foreach($market->operating_days ?? [] as $day)
-                                    <span class="badge bg-light text-dark border"><i class="bi bi-calendar2-check text-primary"></i> {{ $day }}</span>
-                                @endforeach
-                            </div>
-                            <a href="{{ route('markets.show', $market) }}" class="btn btn-primary-ml w-100 justify-content-center">Explore Market</a>
+                    </div>
+                    <h3>{{ $market->name }}</h3>
+                    <p>{{ Str::limit($market->description, 60) }}</p>
+                    
+                    <div class="market-stats">
+                        <div>
+                            <span>Stalls</span>
+                            <strong>12+</strong>
+                        </div>
+                        <div>
+                            <span>Distance</span>
+                            <strong>2.4m</strong>
+                        </div>
+                        <div>
+                            <span>Status</span>
+                            <strong class="text-success">Open</strong>
                         </div>
                     </div>
+                    
+                    <a href="{{ route('markets.show', $market) }}" class="card-link text-decoration-none">
+                        Explore Market <i class="bi bi-arrow-right"></i>
+                    </a>
                 </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-<!-- Featured Products -->
-@if($featuredProducts->count() > 0)
-<section class="py-5 mb-5">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-end mb-4">
-            <div>
-                <span class="section-pill">Fresh Arrivals</span>
-                <h2 class="section-title">Fresh from the Farm</h2>
             </div>
-            <a href="{{ route('products.index') }}" class="btn btn-outline-ml">Browse Catalog</a>
-        </div>
-
-        <div class="row g-4">
-            @foreach($featuredProducts as $product)
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="product-card">
-                        <div class="product-card-img-wrapper">
-                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="product-card-img">
-                            @if($product->is_recurring)
-                                <span class="product-badge">Weekly</span>
-                            @else
-                                <span class="product-badge product-badge-new">Seasonal</span>
-                            @endif
-                        </div>
-                        <div class="p-3">
-                            <div class="small text-primary fw-bold mb-1">{{ $product->category->name }}</div>
-                            <h6 class="fw-bold mb-1 text-truncate">{{ $product->name }}</h6>
-                            <p class="small text-muted mb-2 text-truncate"><i class="bi bi-person-circle"></i> {{ $product->farmer->farmerProfile->stall_name }}</p>
-                            
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="fs-5 fw-bold text-dark">${{ number_format($product->price, 2) }}<span class="fs-6 text-muted fw-normal">/{{ $product->unit }}</span></span>
-                            </div>
-                            
-                            <div class="mt-3">
-                                <a href="{{ route('products.show', $product) }}" class="btn btn-primary-ml w-100 justify-content-center btn-sm">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             @endforeach
         </div>
     </div>
-</section>
+</div>
 @endif
 
-<!-- CTA -->
-<section class="py-5 bg-primary-ml text-white text-center">
-    <div class="container py-4">
-        <h2 class="fw-bold mb-3">Are you a local farmer?</h2>
-        <p class="fs-5 mb-4 opacity-75 max-w-lg mx-auto">Join MarketLink to reach more customers, reduce waste through pre-orders, and grow your local business.</p>
-        <a href="{{ route('register') }}" class="btn btn-light btn-lg px-4 rounded-pill fw-bold text-primary">Register as a Farmer</a>
+@if($featuredProducts->count() > 0)
+<div class="section-space">
+    <div class="app-container">
+        <div class="section-header">
+            <div>
+                <div class="eyebrow"><span class="eyebrow-dot"></span> Fresh Arrivals</div>
+                <h2>Farm <em>fresh</em> picks</h2>
+            </div>
+            <a href="{{ route('products.index') }}" class="outline-button text-decoration-none">Browse Catalog</a>
+        </div>
+
+        <div class="market-card-grid">
+            @foreach($featuredProducts as $product)
+            <div class="catalog-product-card">
+                <div class="catalog-product-image">
+                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                    <button class="favorite-button"><i class="bi bi-heart"></i></button>
+                    @if($product->is_recurring)
+                        <div class="stock-badge">Weekly</div>
+                    @else
+                        <div class="stock-badge" style="background:#fff2ea;color:var(--clay);">Seasonal</div>
+                    @endif
+                </div>
+                <div class="catalog-product-body">
+                    <div class="catalog-product-meta">
+                        <span><i class="bi bi-tag-fill"></i> {{ $product->category->name }}</span>
+                        <span><i class="bi bi-star-fill text-warning"></i> 4.9</span>
+                    </div>
+                    <h3>{{ $product->name }}</h3>
+                    <a href="#" class="farmer-link text-decoration-none"><i class="bi bi-person-circle"></i> {{ $product->farmer->farmerProfile->stall_name ?? 'Local Farm' }}</a>
+                    
+                    <div class="catalog-product-footer">
+                        <div>
+                            <strong>${{ number_format($product->price, 2) }}</strong>
+                            <small>per {{ $product->unit }}</small>
+                        </div>
+                        <div class="product-add-row">
+                            <div class="mini-stepper">
+                                <button type="button"><i class="bi bi-dash"></i></button>
+                                <b>1</b>
+                                <button type="button"><i class="bi bi-plus"></i></button>
+                            </div>
+                            <button class="add-preorder" type="button" onclick="window.location='{{ route('products.show', $product) }}'">View</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
     </div>
-</section>
+</div>
+@endif
+
+<div class="home-cta">
+    <div class="app-container">
+        <div class="home-cta-card">
+            <div>
+                <div class="eyebrow"><span class="eyebrow-dot"></span> For Farmers</div>
+                <h2>Grow your <em>local</em> business</h2>
+                <p>Join MarketLink to reach more customers, reduce waste through pre-orders, and manage your market stall with ease.</p>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('register') }}" class="primary-button text-decoration-none">Register as a Farmer</a>
+                    <a href="{{ route('about') }}" class="light-button text-decoration-none">Learn More</a>
+                </div>
+            </div>
+            <div>
+                <!-- Decorative element or illustration can go here -->
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
+

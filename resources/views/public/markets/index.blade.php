@@ -3,97 +3,139 @@
 
 @section('content')
 
-<!-- Page Header -->
-<section class="page-header">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h1 class="mb-2"><i class="bi bi-shop-window me-2"></i>Local Farmers Markets</h1>
-                <p class="mb-0 opacity-75">Find and explore farmers markets in your area. See operating days, locations, and the farmers who sell there.</p>
-            </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <span class="badge bg-white text-primary rounded-pill px-3 py-2 fs-6">
-                    <i class="bi bi-geo-alt me-1"></i> {{ $markets->count() }} Markets
-                </span>
-            </div>
+<div class="app-container">
+    <div class="page-title">
+        <div>
+            <div class="eyebrow"><span class="eyebrow-dot"></span> Local Markets</div>
+            <h1>Explore <em>local</em> markets</h1>
+            <p>Find and explore farmers markets in your area. See operating days, locations, and the farmers who sell there.</p>
+        </div>
+        <div class="catalog-context">
+            <span class="context-label">Status</span>
+            <button type="button">Active Markets <i class="bi bi-chevron-down"></i></button>
+            <small>Showing {{ $markets->count() }} locations</small>
         </div>
     </div>
-</section>
 
-<div class="container py-4">
+    <div class="catalog-layout">
+        <aside class="filter-sidebar">
+            <div class="filter-heading">
+                <span><i class="bi bi-funnel"></i> Filters</span>
+                <a href="{{ route('markets.index') }}" class="text-decoration-none" style="font-size: 9px; font-weight: 800; color: var(--clay);">CLEAR ALL</a>
+            </div>
 
-    <!-- Filters -->
-    <div class="card-ml border-0 p-3 p-md-4 mb-4">
-        <form action="{{ route('markets.index') }}" method="GET" class="row g-3 align-items-end">
-            <div class="col-md-5">
-                <label class="form-label small fw-bold text-muted">Search Markets</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" name="search" class="form-control" placeholder="Market name or city..." value="{{ request('search') }}">
+            <form action="{{ route('markets.index') }}" method="GET">
+                <div class="filter-block">
+                    <strong>Search Markets</strong>
+                    <div style="display:flex; align-items:center; border:1px solid var(--line); border-radius:6px; padding:6px; background:#fff;">
+                        <i class="bi bi-search text-muted mx-2"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Name or city..." style="border:none; outline:none; background:transparent; font-size:10px; width:100%;">
+                    </div>
+                </div>
+
+                <div class="filter-block">
+                    <strong>Operating Day</strong>
+                    @foreach(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] as $day)
+                        <label class="filter-check">
+                            <input type="radio" name="day" value="{{ $day }}" {{ request('day') == $day ? 'checked' : '' }}>
+                            {{ $day }}
+                        </label>
+                    @endforeach
+                </div>
+
+                <button type="submit" class="primary-button wide mt-3">Apply Filters</button>
+            </form>
+
+            <div class="map-panel" style="margin-top: 25px;">
+                <div class="map-background"></div>
+                <div class="map-road road-a"></div>
+                <div class="map-road road-b"></div>
+                <div class="map-road road-c"></div>
+                
+                <div class="map-park park-a"><i class="bi bi-tree-fill"></i></div>
+                <div class="map-park park-b"><i class="bi bi-tree-fill"></i></div>
+
+                <div class="map-marker" style="top: 40%; left: 35%;">
+                    <span><i class="bi bi-shop"></i></span>
+                </div>
+                <div class="map-marker clay" style="top: 70%; left: 65%;">
+                    <span><i class="bi bi-shop"></i></span>
+                </div>
+                <div class="map-marker gold" style="top: 25%; left: 75%;">
+                    <span><i class="bi bi-shop"></i></span>
+                </div>
+
+                <div class="map-legend">
+                    <span><span class="legend-dot"></span> Open</span>
+                    <span><span class="legend-dot clay"></span> Closed</span>
+                    <button><i class="bi bi-crosshair"></i> Locate</button>
                 </div>
             </div>
-            <div class="col-md-4">
-                <label class="form-label small fw-bold text-muted">Filter by Day</label>
-                <select name="day" class="form-select">
-                    <option value="">Any Day</option>
-                    @foreach(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] as $day)
-                        <option value="{{ $day }}" {{ request('day') == $day ? 'selected' : '' }}>{{ $day }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-3 d-flex gap-2">
-                <button type="submit" class="btn btn-primary-ml flex-grow-1 justify-content-center">
-                    <i class="bi bi-funnel me-1"></i> Filter
-                </button>
-                <a href="{{ route('markets.index') }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
-            </div>
-        </form>
-    </div>
+        </aside>
 
-    <!-- Markets Grid -->
-    <div class="row g-3 g-md-4">
-        @forelse($markets as $market)
-            <div class="col-md-6 col-lg-4">
-                <div class="card-ml h-100 border-0 overflow-hidden">
-                    @if($market->image)
-                        <img src="{{ asset('storage/'.$market->image) }}" class="card-img-top img-cover" style="height: 200px;" alt="{{ $market->name }}">
-                    @else
-                        <div class="bg-gradient d-flex align-items-center justify-content-center" style="height:200px; background: linear-gradient(135deg, var(--accent-pale), var(--accent-light));">
-                            <i class="bi bi-shop fs-1 text-primary opacity-50"></i>
-                        </div>
-                    @endif
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-2">{{ $market->name }}</h5>
-                        <p class="small text-muted mb-3">
-                            <i class="bi bi-geo-alt-fill text-primary"></i> {{ $market->address }}, {{ $market->city }}
-                        </p>
-                        <p class="small mb-3 text-truncate-2">{{ Str::limit($market->description, 100) }}</p>
-
-                        <div class="d-flex flex-wrap gap-1 mb-3">
-                            @foreach($market->operating_days ?? [] as $day)
-                                <span class="badge bg-light text-dark border small">{{ $day }}</span>
-                            @endforeach
-                        </div>
-
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span class="small text-muted">
-                                <i class="bi bi-clock me-1"></i>{{ $market->opening_time }} - {{ $market->closing_time }}
-                            </span>
-                            <a href="{{ route('markets.show', $market) }}" class="btn btn-sm btn-primary-ml">Explore <i class="bi bi-arrow-right"></i></a>
-                        </div>
+        <div>
+            <div class="catalog-toolbar">
+                <span>Showing {{ $markets->count() }} markets</span>
+                <div class="toolbar-actions">
+                    <div class="view-toggle">
+                        <button class="active"><i class="bi bi-grid"></i></button>
+                        <button><i class="bi bi-list"></i></button>
                     </div>
                 </div>
             </div>
-        @empty
-            <div class="col-12">
-                <div class="empty-state">
-                    <i class="bi bi-shop empty-state-icon"></i>
-                    <h5 class="fw-bold">No markets found</h5>
-                    <p class="text-muted">Try adjusting your search or day filter.</p>
-                    <a href="{{ route('markets.index') }}" class="btn btn-primary-ml mt-2">View All Markets</a>
+
+            <div class="market-card-grid">
+                @forelse($markets as $market)
+                <div class="market-card">
+                    <div class="market-card-top {{ $loop->index % 3 == 0 ? 'green' : ($loop->index % 3 == 1 ? 'terracotta' : 'gold') }}">
+                        <div class="market-live">
+                            <span class="live-dot"></span> Open Today
+                        </div>
+                        <button type="button" class="market-select"><i class="bi bi-heart"></i></button>
+                        <div class="market-map-lines"></div>
+                        <div class="market-card-icon"><i class="bi bi-shop fs-1"></i></div>
+                    </div>
+                    <div class="market-card-body">
+                        <div class="market-day">
+                            <span><i class="bi bi-geo-alt-fill text-primary"></i> {{ $market->city }}</span>
+                            @if(!empty($market->operating_days))
+                                <b>{{ $market->operating_days[0] }}s</b>
+                            @endif
+                        </div>
+                        <h3>{{ $market->name }}</h3>
+                        <p>{{ Str::limit($market->description, 60) }}</p>
+                        
+                        <div class="market-stats">
+                            <div>
+                                <span>Hours</span>
+                                <strong>{{ \Carbon\Carbon::parse($market->opening_time)->format('ga') }}</strong>
+                            </div>
+                            <div>
+                                <span>Farmers</span>
+                                <strong>8+</strong>
+                            </div>
+                            <div>
+                                <span>Status</span>
+                                <strong class="text-success">Open</strong>
+                            </div>
+                        </div>
+                        
+                        <a href="{{ route('markets.show', $market) }}" class="card-link text-decoration-none" style="width: 100%; justify-content: center; background: var(--sage); padding: 10px; border-radius: 8px;">
+                            Explore Market <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
                 </div>
+                @empty
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--paper); border-radius: 12px; border: 1px solid var(--line);">
+                        <i class="bi bi-shop text-muted mb-2 d-block" style="font-size: 24px;"></i>
+                        <strong>No markets found</strong>
+                        <p class="text-muted" style="font-size: 11px;">Try adjusting your filters or search terms.</p>
+                        <a href="{{ route('markets.index') }}" class="light-button text-decoration-none mt-2">Reset Filters</a>
+                    </div>
+                @endforelse
             </div>
-        @endforelse
+        </div>
     </div>
 </div>
+
 @endsection

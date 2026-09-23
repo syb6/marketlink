@@ -3,162 +3,136 @@
 
 @section('content')
 
-<!-- Page Header -->
-<section class="page-header">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h1 class="mb-2"><i class="bi bi-grid-3x3-gap-fill me-2"></i>Browse Fresh Products</h1>
-                <p class="mb-0 opacity-75">Discover farm-fresh produce from verified local farmers. Everything here is locally grown and seasonally sourced.</p>
-            </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <span class="badge bg-white text-primary rounded-pill px-3 py-2 fs-6">
-                    <i class="bi bi-box-seam me-1"></i> {{ $products->total() }} Products
-                </span>
-            </div>
+<div class="app-container">
+    <div class="page-title">
+        <div>
+            <div class="eyebrow"><span class="eyebrow-dot"></span> Fresh Catalog</div>
+            <h1>Browse <em>fresh</em> produce</h1>
+            <p>Discover farm-fresh produce from verified local farmers. Everything here is locally grown and seasonally sourced.</p>
+        </div>
+        <div class="catalog-context">
+            <span class="context-label">Location Context</span>
+            <button type="button">All Markets <i class="bi bi-chevron-down"></i></button>
+            <small>Showing {{ $products->total() }} available items</small>
         </div>
     </div>
-</section>
 
-<div class="container py-4">
-    <div class="row g-4">
-        <!-- Filter Sidebar -->
-        <div class="col-lg-3">
-            <div class="filter-sidebar">
-                <!-- Mobile Filter Toggle -->
-                <button class="btn btn-outline-ml w-100 d-lg-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
-                    <i class="bi bi-funnel me-2"></i>Filters & Sort
-                </button>
+    <div class="catalog-layout">
+        <aside class="filter-sidebar">
+            <div class="filter-heading">
+                <span><i class="bi bi-funnel"></i> Filters</span>
+                <a href="{{ route('products.index') }}" class="text-decoration-none" style="font-size: 9px; font-weight: 800; color: var(--clay);">CLEAR ALL</a>
+            </div>
 
-                <div class="collapse d-lg-block" id="filterCollapse">
-                    <div class="card-ml border-0 p-4">
-                        <h6 class="fw-bold mb-4 d-flex align-items-center gap-2">
-                            <i class="bi bi-funnel text-primary"></i> Filters
-                        </h6>
-
-                        <form action="{{ route('products.index') }}" method="GET" class="form-ml">
-                            <!-- Search -->
-                            <div class="mb-4">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Search</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                    <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Search products..." value="{{ request('search') }}">
-                                </div>
-                            </div>
-
-                            <!-- Categories -->
-                            <div class="mb-4">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Category</label>
-                                <div class="d-flex flex-column gap-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="category" id="cat_all" value="" {{ empty(request('category')) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="cat_all">All Categories</label>
-                                    </div>
-                                    @foreach($categories as $cat)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="category" id="cat_{{ $cat->id }}" value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="cat_{{ $cat->id }}">
-                                                {{ $cat->icon }} {{ $cat->name }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <!-- Price Range -->
-                            <div class="mb-4">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Price Range</label>
-                                <div class="d-flex gap-2">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request('min_price') }}">
-                                    </div>
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request('max_price') }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Sort -->
-                            <div class="mb-4">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Sort By</label>
-                                <select name="sort" class="form-select form-select-sm">
-                                    <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest First</option>
-                                    <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low → High</option>
-                                    <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High → Low</option>
-                                    <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name A-Z</option>
-                                </select>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary-ml w-100 justify-content-center mb-2">
-                                <i class="bi bi-filter me-1"></i> Apply Filters
-                            </button>
-                            <a href="{{ route('products.index') }}" class="btn btn-link w-100 text-muted small">Clear All</a>
-                        </form>
+            <form action="{{ route('products.index') }}" method="GET">
+                <div class="filter-block">
+                    <strong>Search</strong>
+                    <div style="display:flex; align-items:center; border:1px solid var(--line); border-radius:6px; padding:6px; background:#fff;">
+                        <i class="bi bi-search text-muted mx-2"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..." style="border:none; outline:none; background:transparent; font-size:10px; width:100%;">
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Products Grid -->
-        <div class="col-lg-9">
+                <div class="filter-block">
+                    <strong>Category</strong>
+                    <label class="filter-check">
+                        <input type="radio" name="category" value="" {{ empty(request('category')) ? 'checked' : '' }}>
+                        All Categories
+                    </label>
+                    @foreach($categories as $cat)
+                        <label class="filter-check">
+                            <input type="radio" name="category" value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'checked' : '' }}>
+                            {{ $cat->name }}
+                        </label>
+                    @endforeach
+                </div>
+
+                <div class="filter-block">
+                    <strong>Sort By</strong>
+                    <select name="sort" class="sort-control" style="width: 100%; border-color: var(--line);" onchange="this.form.submit()">
+                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest First</option>
+                        <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low → High</option>
+                        <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High → Low</option>
+                        <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name A-Z</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="primary-button wide mt-3">Apply Filters</button>
+            </form>
+
+            <div class="filter-trust">
+                <i class="bi bi-shield-check" style="font-size: 14px;"></i>
+                <strong>100% Quality Guarantee</strong>
+                <span>All farmers are verified local producers committed to sustainable practices.</span>
+            </div>
+        </aside>
+
+        <div>
             @if(request('farmer'))
                 @php $farmerName = $farmers->firstWhere('user_id', request('farmer')); @endphp
-                <div class="alert alert-info border-0 rounded-ml d-flex justify-content-between align-items-center mb-4 shadow-sm">
-                    <span><i class="bi bi-shop me-2"></i>Showing products from <strong>{{ $farmerName ? ($farmerName->stall_name ?? $farmerName->user->name) : 'selected farmer' }}</strong></span>
-                    <a href="{{ route('products.index') }}" class="btn btn-sm btn-outline-danger rounded-pill"><i class="bi bi-x-lg"></i></a>
+                <div class="catalog-toolbar">
+                    <strong>Showing products from {{ $farmerName ? ($farmerName->stall_name ?? $farmerName->user->name) : 'selected farmer' }}</strong>
+                    <a href="{{ route('products.index') }}" class="text-decoration-none text-danger"><i class="bi bi-x-circle"></i> Clear Farmer Filter</a>
                 </div>
             @endif
 
-            <div class="row g-3 g-md-4">
+            <div class="catalog-toolbar">
+                <span>Showing {{ $products->count() }} of {{ $products->total() }} results</span>
+                <div class="toolbar-actions">
+                    <div class="view-toggle">
+                        <button class="active"><i class="bi bi-grid"></i></button>
+                        <button><i class="bi bi-list"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="market-card-grid catalog-products">
                 @forelse($products as $product)
-                    <div class="col-6 col-md-4">
-                        <div class="product-card h-100">
-                            <div class="product-card-img-wrapper position-relative">
-                                <a href="{{ route('products.show', $product) }}">
-                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="product-card-img" style="height: 200px;">
-                                </a>
-
-                                @if(!$product->is_available || $product->stock_quantity <= 0)
-                                    <span class="product-badge product-badge-sold">Sold Out</span>
-                                @elseif($product->is_recurring)
-                                    <span class="product-badge">Weekly</span>
-                                @else
-                                    <span class="product-badge product-badge-new">Seasonal</span>
-                                @endif
+                    <div class="catalog-product-card">
+                        <div class="catalog-product-image">
+                            <a href="{{ route('products.show', $product) }}">
+                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                            </a>
+                            <button class="favorite-button"><i class="bi bi-heart"></i></button>
+                            
+                            @if(!$product->is_available || $product->stock_quantity <= 0)
+                                <div class="stock-badge sold-out">Sold Out</div>
+                            @elseif($product->is_recurring)
+                                <div class="stock-badge">Weekly</div>
+                            @else
+                                <div class="stock-badge" style="background:#fff2ea;color:var(--clay);">Seasonal</div>
+                            @endif
+                        </div>
+                        <div class="catalog-product-body">
+                            <div class="catalog-product-meta">
+                                <span><i class="bi bi-tag-fill"></i> {{ $product->category->name }}</span>
+                                <span><i class="bi bi-star-fill text-warning"></i> 4.9</span>
                             </div>
-
-                            <div class="p-3 d-flex flex-column" style="min-height: 160px;">
-                                <div class="small text-primary fw-bold mb-1">{{ $product->category->icon ?? '' }} {{ $product->category->name }}</div>
-                                <h6 class="fw-bold mb-1 text-truncate">
-                                    <a href="{{ route('products.show', $product) }}" class="text-dark text-decoration-none">{{ $product->name }}</a>
-                                </h6>
-                                <a href="{{ route('products.index', ['farmer' => $product->farmer_id]) }}" class="small text-muted mb-2 d-inline-block text-decoration-none">
-                                    <i class="bi bi-person-circle"></i> {{ $product->farmer->farmerProfile->stall_name ?? $product->farmer->name }}
-                                </a>
-
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="fs-5 fw-bold text-dark">${{ number_format($product->price, 2) }}<span class="fs-6 text-muted fw-normal">/{{ $product->unit }}</span></span>
-                                        <span class="small text-muted d-none d-md-inline">{{ $product->stock_quantity }} left</span>
-                                    </div>
-
-                                    <a href="{{ route('products.show', $product) }}" class="btn btn-outline-ml w-100 justify-content-center btn-sm">
-                                        <i class="bi bi-eye me-1"></i> View Details
-                                    </a>
+                            <h3>
+                                <a href="{{ route('products.show', $product) }}" class="text-decoration-none text-dark">{{ $product->name }}</a>
+                            </h3>
+                            <a href="{{ route('products.index', ['farmer' => $product->farmer_id]) }}" class="farmer-link text-decoration-none">
+                                <i class="bi bi-person-circle"></i> {{ $product->farmer->farmerProfile->stall_name ?? $product->farmer->name }}
+                            </a>
+                            
+                            <div class="catalog-product-footer">
+                                <div>
+                                    <strong>${{ number_format($product->price, 2) }}</strong>
+                                    <small>per {{ $product->unit }}</small>
+                                </div>
+                                <div class="product-add-row">
+                                    <span class="text-muted" style="font-size: 9px; margin-right: 5px;">{{ $product->stock_quantity }} left</span>
+                                    <button class="add-preorder" type="button" onclick="window.location='{{ route('products.show', $product) }}'">View</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="col-12">
-                        <div class="empty-state">
-                            <i class="bi bi-search empty-state-icon"></i>
-                            <h5 class="fw-bold">No products found</h5>
-                            <p class="text-muted">Try adjusting your filters or search terms.</p>
-                            <a href="{{ route('products.index') }}" class="btn btn-primary-ml mt-2"><i class="bi bi-arrow-clockwise me-1"></i> Reset Filters</a>
-                        </div>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--paper); border-radius: 12px; border: 1px solid var(--line);">
+                        <i class="bi bi-search text-muted mb-2 d-block" style="font-size: 24px;"></i>
+                        <strong>No products found</strong>
+                        <p class="text-muted" style="font-size: 11px;">Try adjusting your filters or search terms.</p>
+                        <a href="{{ route('products.index') }}" class="light-button text-decoration-none mt-2">Reset Filters</a>
                     </div>
                 @endforelse
             </div>
@@ -166,20 +140,19 @@
             <div class="mt-5 d-flex justify-content-center">
                 {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
             </div>
+            
+            @guest
+            <div class="catalog-ai">
+                <div class="ai-spark"><i class="bi bi-stars"></i></div>
+                <div>
+                    <strong>Want to pre-order?</strong>
+                    <p>Create an account to reserve products and pick them up at the market.</p>
+                </div>
+                <a href="{{ route('register') }}" class="text-decoration-none" style="margin-left: auto; color: var(--clay); font-weight: 800; font-size: 9px;">SIGN UP <i class="bi bi-arrow-right"></i></a>
+            </div>
+            @endguest
         </div>
     </div>
 </div>
-
-<!-- CTA Banner -->
-<section class="py-5 bg-primary-ml text-white text-center mt-4">
-    <div class="container py-3">
-        <h3 class="fw-bold mb-3">Want to add to cart or place orders?</h3>
-        <p class="opacity-75 mb-4">Create a free account to pre-order products and pick them up at the market.</p>
-        <div class="d-flex gap-3 justify-content-center flex-wrap">
-            <a href="{{ route('register') }}" class="btn btn-light btn-lg px-4 rounded-pill fw-bold text-primary">Sign Up Free</a>
-            <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg px-4 rounded-pill">Login</a>
-        </div>
-    </div>
-</section>
 
 @endsection

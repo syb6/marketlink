@@ -45,6 +45,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 // ── Customer ──────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [CustomerDashboard::class, 'index'])->name('dashboard');
+    Route::delete('/profile', [CustomerDashboard::class, 'destroyProfile'])->name('profile.destroy');
 
     // Markets
     Route::get('/markets', [CustomerMarketController::class, 'index'])->name('markets.index');
