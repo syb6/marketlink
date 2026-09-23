@@ -10,23 +10,24 @@
                 <i class="bi bi-robot"></i>
                 <strong>eGreen Assistant</strong>
             </div>
-            <button type="button" class="ai-close-btn" onclick="document.getElementById('ai-chat-window').classList.add('d-none')">
+            <button type="button" class="ai-close-btn"
+                onclick="document.getElementById('ai-chat-window').classList.add('d-none')">
                 <i class="bi bi-x"></i>
             </button>
         </div>
-        
+
         <div class="ai-chat-body">
             <div class="ai-bubble ai-response">
                 Hi! I'm your MarketLink Assistant. How can I help you source fresh produce today?
             </div>
-            
+
             <div class="ai-chips">
                 <button type="button" class="ai-chip">Find organic apples nearby</button>
                 <button type="button" class="ai-chip">Market pickup hours today</button>
                 <button type="button" class="ai-chip">Recommend seasonal veg</button>
             </div>
         </div>
-        
+
         <div class="ai-chat-footer">
             <input type="text" placeholder="Ask something..." class="ai-input">
             <button type="button" class="ai-send-btn"><i class="bi bi-send-fill"></i></button>
@@ -34,7 +35,8 @@
     </div>
 
     <!-- Floating Launcher -->
-    <button type="button" class="ai-launcher" onclick="document.getElementById('ai-chat-window').classList.toggle('d-none')">
+    <button type="button" class="ai-launcher"
+        onclick="document.getElementById('ai-chat-window').classList.toggle('d-none')">
         <i class="bi bi-stars"></i>
         <span class="ai-pulse"></span>
     </button>
@@ -53,7 +55,7 @@
         gap: 16px;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    
+
     .ai-launcher {
         position: relative;
         width: 56px;
@@ -69,7 +71,7 @@
         border: none;
         cursor: pointer;
     }
-    
+
     .ai-launcher:hover {
         transform: scale(1.05);
         background: var(--emerald-700, #047857);
@@ -77,16 +79,26 @@
 
     .ai-pulse {
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         border-radius: 50%;
         border: 2px solid var(--emerald-500, #10b981);
         animation: aiPulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
         pointer-events: none;
     }
-    
+
     @keyframes aiPulse {
-        0% { transform: scale(1); opacity: 1; }
-        100% { transform: scale(1.5); opacity: 0; }
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
     }
 
     .ai-chat-window {
@@ -113,7 +125,7 @@
         align-items: center;
     }
 
-    .ai-chat-header > div {
+    .ai-chat-header>div {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -229,7 +241,7 @@
             left: 16px;
             align-items: flex-end;
         }
-        
+
         .ai-chat-window {
             width: 100%;
             height: calc(100vh - 100px);
@@ -286,36 +298,42 @@
             userMsg.className = 'ai-bubble ai-user';
             userMsg.textContent = text;
             chatBody.appendChild(userMsg);
-            
+
             chatInput.value = '';
             chatBody.scrollTop = chatBody.scrollHeight;
 
             // Append Thinking State
             const botMsg = document.createElement('div');
             botMsg.className = 'ai-bubble ai-response';
-            botMsg.innerHTML = '<span style="opacity: 0.6;"><i class="bi bi-three-dots"></i> Thinking...</span>';
+            botMsg.innerHTML =
+                '<span style="opacity: 0.6;"><i class="bi bi-three-dots"></i> Thinking...</span>';
             chatBody.appendChild(botMsg);
             chatBody.scrollTop = chatBody.scrollHeight;
-
-            const API_KEY = "AQ.Ab8RN6LrWjS0_ZBBTeKI2alKU4Pvg2F4oGc3q64l8KQzaRKyhw";
-            const systemPrompt = "You are the MarketLink AI assistant for eGreen. Rules:\n- Payment: Pre-orders are strictly paid IN PERSON at pickup. No online payment.\n- Delivery: Pickup ONLY at farmer market stalls. No home delivery.\n- Keep answers friendly, helpful, and under 3 sentences.";
+            const API_KEY = "{{ env('GEMINI_API_KEY') }}";
+            const systemPrompt =
+                "You are the MarketLink AI assistant for eGreen. Rules:\n- Payment: Pre-orders are strictly paid IN PERSON at pickup. No online payment.\n- Delivery: Pickup ONLY at farmer market stalls. No home delivery.\n- Keep answers friendly, helpful, and under 3 sentences.";
 
             try {
                 // Official Gemini Endpoint using gemini-2.5-flash
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${API_KEY}`, {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        systemInstruction: {
-                            parts: [{ text: systemPrompt }]
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${API_KEY}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
                         },
-                        contents: [{
-                            parts: [{ text: text }]
-                        }]
-                    })
-                });
+                        body: JSON.stringify({
+                            systemInstruction: {
+                                parts: [{
+                                    text: systemPrompt
+                                }]
+                            },
+                            contents: [{
+                                parts: [{
+                                    text: text
+                                }]
+                            }]
+                        })
+                    });
 
                 if (!response.ok) {
                     const errDetails = await response.json().catch(() => ({}));
@@ -324,7 +342,7 @@
                 }
 
                 const data = await response.json();
-                
+
                 // Safe Optional Chaining
                 const responseText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
@@ -339,13 +357,13 @@
                 const localReply = getMarketLinkReply(text);
                 botMsg.innerHTML = localReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             }
-            
+
             chatBody.scrollTop = chatBody.scrollHeight;
         }
 
         // Event Listeners
         sendBtn.addEventListener('click', () => sendMessage(chatInput.value.trim()));
-        
+
         chatInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
