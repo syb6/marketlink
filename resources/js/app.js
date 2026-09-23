@@ -4,7 +4,7 @@ window.Toast = Toast;
 
 // --- Custom Responsive Confirm Modal Polyfill ---
 document.addEventListener('DOMContentLoaded', () => {
-    const modalHTML = 
+    const modalHTML = `
         <div id="ml-custom-confirm" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.4); backdrop-filter:blur(3px); align-items:center; justify-content:center; padding:16px; opacity:0; transition:opacity 0.2s;">
             <div style="background:#fff; border-radius:12px; width:100%; max-width:380px; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,0.1); transform:scale(0.95); transition:transform 0.2s;">
                 <h3 style="margin:0 0 10px; font-size:18px; color:#1c1917; font-weight:700;">Are you sure?</h3>
@@ -15,9 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         </div>
-    ;
+    `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-
+    // ... rest of your code
+});
     const modal = document.getElementById('ml-custom-confirm');
     const msgEl = document.getElementById('ml-confirm-msg');
     const btnCancel = document.getElementById('ml-confirm-cancel');
