@@ -1,0 +1,51 @@
+# MarketLink Implementation Task List
+
+- `[x]` Phase 1: Database Setup
+  - `[x]` Create Migrations (Markets, Profiles, Products, Orders, Reviews, Favorites)
+  - `[x]` Create Models with Relationships
+  - `[x]` Configure Database Seeder with Dummy Data
+- `[x]` Phase 2: Core Backend Logic
+  - `[x]` Setup Authentication (Laravel defaults + custom fields)
+  - `[x]` Create Role Middleware
+  - `[x]` Update Route Configuration
+- `[x]` Phase 3: Controllers implementation
+  - `[x]` AuthController
+  - `[x]` HomeController
+  - `[x]` Customer Controllers (Dashboard, Market, Product, Order, Cart, Favorite, Review)
+  - `[x]` Farmer Controllers (Dashboard, Profile, Product, Order, Review)
+  - `[x]` Admin Controllers (Dashboard, Users, Markets, Categories, Reports, Moderation, Announcements)
+- `[x]` Phase 4: Route Definitions
+  - `[x]` Write complete `routes/web.php`
+- `[x]` Phase 5: UI & Design System
+  - `[x]` Create `app.css` with Variables and Styles
+  - `[x]` Create `app.js` with cart and UI logic
+  - `[x]` Layouts (App, Customer, Farmer, Admin)
+  - `[x]` Partials (Navbar, Footer, Alerts)
+- `[x]` Phase 6: Public Views
+  - `[x]` Home Page
+  - `[x]` About Page
+  - `[x]` Contact Page
+  - `[x]` Auth Pages
+- `[x]` Phase 7: Customer Views
+  - `[x]` Dashboard
+  - `[x]` Market Listing & Detail
+  - `[x]` Product Listing & Detail
+  - `[x]` Cart & Checkout
+  - `[x]` Order History
+  - `[x]` Favorites & Reviews
+- `[x]` Phase 8: Farmer Views
+  - `[x]` Dashboard
+  - `[x]` Profile Management
+  - `[x]` Product Management (CRUD)
+  - `[x]` Order Processing
+  - `[x]` Review Replies
+- `[x]` Phase 9: Admin Views
+  - `[x]` Dashboard (KPIs)
+  - `[x]` User Management
+  - `[x]` Market Management
+  - `[x]` System Reports
+  - `[x]` Moderation
+  - `[x]` Announcements
+- `[x]` Phase 10: Final Polish
+  - `[x]` Test with migrations and seeds
+  - `[x]` Verify mapping integration (Leaflet)
