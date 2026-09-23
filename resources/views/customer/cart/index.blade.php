@@ -40,10 +40,10 @@
                                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
                                     <strong style="font-size: 13px;" data-cart-subtotal="{{ $product->price * $qty }}">${{ number_format($product->price * $qty, 2) }}</strong>
                                     
-                                    <div class="quantity-control" style="display: flex; align-items: center; border: 1px solid var(--line); border-radius: 6px; overflow: hidden;">
-                                        <button type="button" class="qty-minus" style="padding: 4px 8px; border: none; background: #fff; cursor: pointer; font-size: 14px; color: var(--muted);"><i class="bi bi-dash"></i></button>
-                                        <input type="number" class="qty-input" value="{{ $qty }}" min="1" max="{{ $product->stock_quantity }}" data-cart-qty-input="{{ $product->id }}" style="width: 30px; text-align: center; border: none; font-size: 11px; font-weight: 700; outline: none;">
-                                        <button type="button" class="qty-plus" style="padding: 4px 8px; border: none; background: #fff; cursor: pointer; font-size: 14px; color: var(--muted);"><i class="bi bi-plus"></i></button>
+                                    <div class="quantity-control qty-stepper input-group input-group-sm" style="width: 110px;">
+                                        <button type="button" class="btn btn-outline-secondary qty-minus"><i class="bi bi-dash"></i></button>
+                                        <input type="number" class="form-control text-center qty-input" value="{{ $qty }}" min="1" max="{{ $product->stock_quantity }}" data-cart-qty-input="{{ $product->id }}">
+                                        <button type="button" class="btn btn-outline-secondary qty-plus"><i class="bi bi-plus"></i></button>
                                     </div>
 
                                     <button type="button" class="remove-btn" data-cart-remove="{{ $product->id }}" style="background: none; border: none; color: var(--clay); font-size: 16px; cursor: pointer; margin-top: 5px;">

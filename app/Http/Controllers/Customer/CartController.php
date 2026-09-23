@@ -87,7 +87,19 @@ class CartController extends Controller
 
         session(['cart' => $cart]);
 
-        return response()->json(['success' => true, 'cart_count' => array_sum($cart)]);
+        $lineProduct = Product::find($request->product_id);
+        $qty = (int) ($cart[$request->product_id] ?? 0);
+        $subtotal = $lineProduct && $qty > 0 ? $lineProduct->price * $qty : 0;
+
+        // #region agent log
+        file_put_contents(base_path('debug-22f056.log'), json_encode(['sessionId' => '22f056', 'hypothesisId' => 'B', 'location' => 'CartController.php:update', 'message' => 'cart update response payload', 'data' => ['product_id' => $request->product_id, 'quantity' => $request->quantity, 'qty_in_cart' => $qty, 'subtotal' => $subtotal, 'cart_count' => array_sum($cart)], 'timestamp' => (int) (microtime(true) * 1000)])."\n", FILE_APPEND);
+        // #endregion
+
+        return response()->json([
+            'success' => true,
+            'cart_count' => array_sum($cart),
+            'subtotal' => $subtotal,
+        ]);
     }
 
     public function remove(Request $request): JsonResponse

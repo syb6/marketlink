@@ -54,14 +54,18 @@ class HomeController extends Controller
 
     public function products(Request $request): View
     {
+        // #region agent log
+        file_put_contents(base_path('debug-22f056.log'), json_encode(['sessionId' => '22f056', 'hypothesisId' => 'G', 'location' => 'HomeController.php:products', 'message' => 'product search query params', 'data' => ['q' => $request->query('q'), 'search' => $request->query('search'), 'keys' => array_keys($request->query())], 'timestamp' => (int) (microtime(true) * 1000)])."\n", FILE_APPEND);
+        // #endregion
+
         $query = Product::with(['farmer.farmerProfile', 'category'])
             ->where('is_available', true)
             ->whereHas('farmer.farmerProfile', fn ($q) => $q->where('is_approved', true));
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('description', 'like', '%' . $request->search . '%');
+                $q->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -124,9 +128,9 @@ class HomeController extends Controller
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('city', 'like', '%' . $request->search . '%')
-                    ->orWhere('address', 'like', '%' . $request->search . '%');
+                $q->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('city', 'like', '%'.$request->search.'%')
+                    ->orWhere('address', 'like', '%'.$request->search.'%');
             });
         }
 

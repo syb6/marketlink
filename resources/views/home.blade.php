@@ -18,7 +18,7 @@
                     </div>
                     <form action="{{ route('products.index') }}" method="GET" class="hero-search-input">
                         <i class="bi bi-search"></i>
-                        <input type="text" name="q" placeholder="What are you looking for? (e.g., Organic Tomatoes)">
+                        <input type="text" name="search" placeholder="What are you looking for? (e.g., Organic Tomatoes)">
                         <button type="submit"><i class="bi bi-arrow-right"></i></button>
                     </form>
                     <div class="hero-search-meta">
