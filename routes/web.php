@@ -23,6 +23,7 @@ use App\Http\Controllers\Farmer\ReviewController as FarmerReviewController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
+
 // ── Public ────────────────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');

@@ -9,5 +9,6 @@
     @yield('content')
     @include('partials.footer')
     @include('partials.scripts')
+    {{-- @include('partials.ai-widget') --}}
 </body>
 </html>
