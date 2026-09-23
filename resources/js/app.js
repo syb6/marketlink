@@ -17,8 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    // ... rest of your code
-});
+
     const modal = document.getElementById('ml-custom-confirm');
     const msgEl = document.getElementById('ml-confirm-msg');
     const btnCancel = document.getElementById('ml-confirm-cancel');
@@ -45,12 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnCancel.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => {
-        if(e.target === modal) closeModal();
+        if (e.target === modal) closeModal();
     });
 
     btnOk.addEventListener('click', () => {
         closeModal();
-        if(confirmCallback) confirmCallback();
+        if (confirmCallback) confirmCallback();
     });
 
     // Intercept native confirm()
